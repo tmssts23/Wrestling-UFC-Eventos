@@ -1,0 +1,19 @@
+{
+  "name": "addon-stremio-wrestling-ufc",
+  "version": "1.0.0",
+  "description": "Catalogos de eventos WWE, AEW, TNA, ROH e UFC para Stremio e Nuvio",
+  "main": "dist/bundle.cjs",
+  "scripts": {
+    "build": "node build.js",
+    "start": "node dist/bundle.cjs",
+    "dev": "node index.js",
+    "refresh-data": "node scripts/refresh-data.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "esbuild": "^0.27.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
