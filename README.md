@@ -222,7 +222,13 @@ npm i -g vercel
 vercel
 ```
 
-O `vercel.json` encaminha tudo para `api/index.js` e inclui as pastas `public/` e `data/`.
+O `vercel.json` usa o formato atual da Vercel: a função é detetada em `api/index.js` e um
+`rewrites` encaminha todos os pedidos para ela. **Não uses `builds`/`routes`** (formato antigo):
+com ele a Vercel avisa *"Build output contains no functions, static or services directory"* e
+publica um deploy vazio, que responde 404 a tudo (e o validador de manifests falha com
+"custom · root"). O script `vercel-build` não faz nada de propósito — a Vercel não precisa do
+bundle de `npm run build`. Os dados (`data/`), a página de configuração e o logótipo entram no
+deploy automaticamente, porque são lidos com caminhos que o empacotador da Vercel reconhece.
 Não é preciso nenhuma variável: cada instalação traz a sua chave. Se quiseres uma chave
 predefinida, define `TMDB_API_KEY` nas variáveis de ambiente do projeto.
 
