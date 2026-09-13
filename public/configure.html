@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Wrestling &amp; UFC — Eventos | Configurar</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --line: #2b3440;
+    --text: #e6edf3;
+    --muted: #9aa7b4;
+    --accent: #d7263d;
+    --accent-2: #f0a500;
+    --ok: #3fb950;
+    --bad: #f85149;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 32px 18px 60px;
+    background: radial-gradient(1200px 600px at 50% -10%, #1d2535 0%, var(--bg) 60%);
+    color: var(--text);
+    font: 15px/1.55 "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 28px; position: relative; }
+  header img { width: 84px; height: 84px; }
+  h1 { font-size: 25px; margin: 12px 0 6px; }
+  header p { color: var(--muted); margin: 0 auto; max-width: 600px; }
+  .lang {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    gap: 6px;
+  }
+  .lang button { padding: 6px 10px; font-size: 13px; }
+  .lang button.active { border-color: var(--accent-2); background: #2a3340; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 18px;
+  }
+  h2 { font-size: 17px; margin: 0 0 14px; }
+  .row {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    grid-template-areas: "cb name" ". hint";
+    gap: 2px 10px;
+    padding: 10px 12px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .row:hover { background: #1b2230; border-color: var(--line); }
+  .row input { grid-area: cb; width: 18px; height: 18px; margin-top: 3px; accent-color: var(--accent); }
+  .name { grid-area: name; font-weight: 600; }
+  .hint { grid-area: hint; color: var(--muted); font-size: 13px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 6px 0 14px; }
+  button, a.btn {
+    appearance: none;
+    border: 1px solid var(--line);
+    background: #1f2733;
+    color: var(--text);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  button:hover, a.btn:hover { border-color: var(--accent-2); }
+  a.primary { background: linear-gradient(135deg, var(--accent), #8c1128); border-color: #8c1128; }
+  a.disabled { opacity: .45; pointer-events: none; }
+  label.field { display: block; font-weight: 600; margin-bottom: 6px; }
+  .keyrow { display: flex; gap: 10px; flex-wrap: wrap; }
+  input[type=text], input[type=password] {
+    flex: 1 1 320px;
+    min-width: 0;
+    background: #0b1017;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--text);
+    padding: 10px 12px;
+    font: 14px Consolas, "Courier New", monospace;
+  }
+  input:focus { outline: none; border-color: var(--accent-2); }
+  .status { font-size: 13px; margin-top: 8px; min-height: 1.4em; }
+  .status.ok { color: var(--ok); }
+  .status.bad { color: var(--bad); }
+  .url {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 13px;
+    background: #0b1017;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: block;
+    word-break: break-all;
+    color: #cfe3ff;
+  }
+  ol { padding-left: 20px; color: var(--muted); }
+  ol strong { color: var(--text); }
+  .note { color: var(--muted); font-size: 13px; margin-top: 10px; }
+  .warn { color: var(--accent-2); }
+  @media (max-width: 520px) {
+    .lang { position: static; justify-content: center; margin-bottom: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="lang" role="group" aria-label="Idioma / Language">
+      <button type="button" data-lang="pt">PT</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+    <img src="__ORIGIN__/addon-logo.svg" alt="" />
+    <h1 data-i18n="h1">Wrestling &amp; UFC — Eventos</h1>
+    <p data-i18n="intro"></p>
+  </header>
+
+  <div class="panel">
+    <h2 data-i18n="key_title"></h2>
+    <label class="field" for="key" data-i18n="key_label"></label>
+    <div class="keyrow">
+      <input type="password" id="key" autocomplete="off" spellcheck="false" />
+      <button type="button" id="toggle"></button>
+      <button type="button" id="check" data-i18n="check"></button>
+    </div>
+    <div class="status" id="keyStatus"></div>
+    <ol>
+      <li data-i18n-html="key_step1"></li>
+      <li data-i18n-html="key_step2"></li>
+      <li data-i18n-html="key_step3"></li>
+    </ol>
+    <p class="note warn" data-i18n="key_warn"></p>
+  </div>
+
+  <div class="panel">
+    <h2 data-i18n="cat_title"></h2>
+    <label class="field" data-i18n="layout_label"></label>
+    <div id="layout">
+      <label class="row">
+        <input type="radio" name="layout" value="fight" checked />
+        <span class="name" data-i18n="layout_fight"></span>
+        <span class="hint" data-i18n="layout_fight_hint"></span>
+      </label>
+      <label class="row">
+        <input type="radio" name="layout" value="classic" />
+        <span class="name" data-i18n="layout_classic"></span>
+        <span class="hint" data-i18n="layout_classic_hint"></span>
+      </label>
+    </div>
+    <label class="field" style="margin-top:14px" data-i18n="catalogs_label"></label>
+    <div class="actions">
+      <button type="button" id="all" data-i18n="all"></button>
+      <button type="button" id="none" data-i18n="none"></button>
+      <button type="button" id="reset" data-i18n="reset"></button>
+    </div>
+    <div id="list">
+      <!--CATALOGS-->
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 data-i18n="install_title"></h2>
+    <div class="actions">
+      <a class="btn primary" id="install" href="#" data-i18n="install"></a>
+      <button type="button" id="copy"></button>
+    </div>
+    <span class="url" id="url"></span>
+    <p class="note" id="count"></p>
+  </div>
+
+  <div class="panel">
+    <h2>Nuvio</h2>
+    <ol>
+      <li data-i18n="nuvio_step1"></li>
+      <li data-i18n="nuvio_step2"></li>
+      <li data-i18n-html="nuvio_step3"></li>
+    </ol>
+    <p class="note" data-i18n="nuvio_note"></p>
+  </div>
+</div>
+
+<script>
+  var ORIGIN = "__ORIGIN__";
+
+  // Textos da pagina nos dois idiomas.
+  var I18N = {
+    pt: {
+      page_title: 'Wrestling & UFC — Eventos | Configurar',
+      h1: 'Wrestling & UFC — Eventos',
+      intro: 'WWE, AEW e TNA com programas por temporada, eventos agrupados por ano e cada PPV individual, o que saiu na última semana, e todos os eventos UFC do mais recente para o mais antigo.',
+      key_title: '1. A tua chave do TMDB',
+      key_label: 'Chave de API (v3) ou token de leitura (v4)',
+      key_placeholder: 'ex.: 32 caracteres hexadecimais',
+      show: 'Mostrar',
+      hide: 'Esconder',
+      check: 'Validar',
+      key_step1: 'Cria conta grátis em <strong>themoviedb.org</strong>.',
+      key_step2: 'Vai a <strong>Definições → API</strong> e pede uma chave (uso pessoal é aprovado na hora).',
+      key_step3: 'Copia a <strong>API Key</strong> e cola-a acima.',
+      key_warn: 'A chave fica guardada no próprio link de instalação. Não partilhes esse link publicamente — quem o tiver usa a tua chave. Se precisares, podes gerar uma nova no TMDB a qualquer momento.',
+      cat_title: '2. Escolhe os catálogos',
+      layout_label: 'Onde aparecem no Explorar',
+      layout_fight: 'Separador «Fight»',
+      layout_fight_hint: 'Um separador próprio ao lado de Filmes e Séries, com WWE, AEW, TNA e UFC lá dentro.',
+      layout_classic: 'Dentro de Filmes e Séries',
+      layout_classic_hint: 'Para apps que não mostrem separadores próprios.',
+      catalogs_label: 'Catálogos',
+      all: 'Selecionar todos',
+      none: 'Limpar',
+      reset: 'Predefinição',
+      install_title: '3. Instala',
+      install: 'Instalar no Stremio',
+      copy: 'Copiar link do manifest',
+      copied: 'Copiado!',
+      fill_key_first: 'Preenche primeiro a chave do TMDB.',
+      count_one: '1 catálogo selecionado.',
+      count_many: '{n} catálogos selecionados.',
+      count_none: 'Nenhum catálogo selecionado — será usada a predefinição.',
+      nuvio_step1: 'Preenche a chave e escolhe os catálogos acima.',
+      nuvio_step2: 'Copia o link do manifest.',
+      nuvio_step3: 'No Nuvio, abre <strong>Settings → Addons → Add addon</strong> e cola o link.',
+      nuvio_note: 'Este addon fornece catálogos e metadados (pósteres, descrições, temporadas, episódios e datas). Os vídeos em si vêm dos addons de streams que já tenhas instalados.',
+      st_invalid: 'Formato inválido: a chave v3 tem 32 caracteres (0-9, a-f).',
+      st_checking: 'A validar no TMDB…',
+      st_valid: 'Chave válida ✓',
+      st_refused: 'O TMDB recusou esta chave.',
+      st_unreachable: 'Não foi possível validar agora; podes instalar na mesma.',
+      st_needkey: 'Preenche uma chave válida antes de copiar o link.'
+    },
+    en: {
+      page_title: 'Wrestling & UFC — Events | Configure',
+      h1: 'Wrestling & UFC — Events',
+      intro: 'WWE, AEW and TNA with shows by season, events grouped by year and every single PPV, what aired in the past week, and every UFC event from newest to oldest.',
+      key_title: '1. Your TMDB key',
+      key_label: 'API key (v3) or read access token (v4)',
+      key_placeholder: 'e.g. 32 hexadecimal characters',
+      show: 'Show',
+      hide: 'Hide',
+      check: 'Validate',
+      key_step1: 'Create a free account at <strong>themoviedb.org</strong>.',
+      key_step2: 'Go to <strong>Settings → API</strong> and request a key (personal use is approved instantly).',
+      key_step3: 'Copy the <strong>API Key</strong> and paste it above.',
+      key_warn: 'The key is stored inside the install link itself. Do not share that link publicly — anyone who has it uses your key. If needed, you can generate a new one on TMDB at any time.',
+      cat_title: '2. Choose your catalogs',
+      layout_label: 'Where they appear in Discover',
+      layout_fight: '«Fight» tab',
+      layout_fight_hint: 'A tab of its own next to Movies and Series, with WWE, AEW, TNA and UFC inside.',
+      layout_classic: 'Inside Movies and Series',
+      layout_classic_hint: 'For apps that do not show custom tabs.',
+      catalogs_label: 'Catalogs',
+      all: 'Select all',
+      none: 'Clear',
+      reset: 'Default',
+      install_title: '3. Install',
+      install: 'Install in Stremio',
+      copy: 'Copy manifest link',
+      copied: 'Copied!',
+      fill_key_first: 'Enter your TMDB key first.',
+      count_one: '1 catalog selected.',
+      count_many: '{n} catalogs selected.',
+      count_none: 'No catalog selected — the default will be used.',
+      nuvio_step1: 'Enter your key and choose the catalogs above.',
+      nuvio_step2: 'Copy the manifest link.',
+      nuvio_step3: 'In Nuvio, open <strong>Settings → Addons → Add addon</strong> and paste the link.',
+      nuvio_note: 'This addon provides catalogs and metadata (posters, descriptions, seasons, episodes and dates). The videos themselves come from the stream addons you already have installed.',
+      st_invalid: 'Invalid format: a v3 key has 32 characters (0-9, a-f).',
+      st_checking: 'Validating with TMDB…',
+      st_valid: 'Valid key ✓',
+      st_refused: 'TMDB rejected this key.',
+      st_unreachable: 'Could not validate right now; you can still install.',
+      st_needkey: 'Enter a valid key before copying the link.'
+    }
+  };
+
+  var lang = 'pt';
+  try {
+    var savedLang = localStorage.getItem('wwrs-lang');
+    lang = savedLang === 'en' || savedLang === 'pt'
+      ? savedLang
+      : (String(navigator.language || '').toLowerCase().indexOf('pt') === 0 ? 'pt' : 'en');
+  } catch (e) {
+    lang = String(navigator.language || '').toLowerCase().indexOf('pt') === 0 ? 'pt' : 'en';
+  }
+
+  function t(key, vars) {
+    var text = (I18N[lang] && I18N[lang][key]) || I18N.pt[key] || key;
+    return text.replace(/\{(\w+)\}/g, function (_, k) { return vars && vars[k] != null ? vars[k] : ''; });
+  }
+
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('#list input[type=checkbox]'));
+  var defaults = boxes.filter(function (b) { return b.checked; }).map(function (b) { return b.value; });
+  var keyInput = document.getElementById('key');
+  var keyStatus = document.getElementById('keyStatus');
+  var toggleBtn = document.getElementById('toggle');
+  var copyBtn = document.getElementById('copy');
+  var KEY_RE = /^([a-f0-9]{32}|ey[A-Za-z0-9._-]{20,})$/i;
+  // Estado da validacao guardado como chave de texto, para mudar de idioma a qualquer momento.
+  var status = { key: '', cls: '' };
+  var copiedUntil = 0;
+
+  try {
+    var saved = localStorage.getItem('wwrs-tmdb-key');
+    if (saved) keyInput.value = saved;
+  } catch (e) {}
+
+  function tokens() {
+    var list = boxes.filter(function (b) { return b.checked; }).map(function (b) { return b.value; });
+    return list.length ? list : defaults;
+  }
+  function key() { return keyInput.value.trim(); }
+  function layout() {
+    var r = document.querySelector('input[name=layout]:checked');
+    return r ? r.value : 'fight';
+  }
+
+  function base64url(text) {
+    var bytes = new TextEncoder().encode(text);
+    var bin = '';
+    bytes.forEach(function (b) { bin += String.fromCharCode(b); });
+    return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  function manifestUrl() {
+    var payload = { c: tokens() };
+    if (key()) payload.k = key();
+    if (layout() === 'classic') payload.l = 'classic';
+    return ORIGIN + '/' + base64url(JSON.stringify(payload)) + '/manifest.json';
+  }
+
+  function render() {
+    var url = manifestUrl();
+    var valid = KEY_RE.test(key());
+    document.getElementById('url').textContent = valid ? url : t('fill_key_first');
+    var install = document.getElementById('install');
+    install.href = valid ? url.replace(/^https?:\/\//, 'stremio://') : '#';
+    install.className = 'btn primary' + (valid ? '' : ' disabled');
+    var n = boxes.filter(function (b) { return b.checked; }).length;
+    document.getElementById('count').textContent = n
+      ? (n === 1 ? t('count_one') : t('count_many', { n: n }))
+      : t('count_none');
+    keyStatus.textContent = status.key ? t(status.key) : '';
+    keyStatus.className = 'status' + (status.cls ? ' ' + status.cls : '');
+    toggleBtn.textContent = keyInput.type === 'password' ? t('show') : t('hide');
+    copyBtn.textContent = Date.now() < copiedUntil ? t('copied') : t('copy');
+  }
+
+  // Aplica o idioma a toda a pagina (textos fixos, lista de catalogos e mensagens).
+  function applyLang(next) {
+    lang = next === 'en' ? 'en' : 'pt';
+    try { localStorage.setItem('wwrs-lang', lang); } catch (e) {}
+    document.documentElement.lang = lang === 'en' ? 'en' : 'pt-PT';
+    document.title = t('page_title');
+    Array.prototype.slice.call(document.querySelectorAll('[data-i18n]')).forEach(function (el) {
+      el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    Array.prototype.slice.call(document.querySelectorAll('[data-i18n-html]')).forEach(function (el) {
+      el.innerHTML = t(el.getAttribute('data-i18n-html'));
+    });
+    Array.prototype.slice.call(document.querySelectorAll('#list [data-pt]')).forEach(function (el) {
+      el.textContent = el.getAttribute('data-' + lang) || el.getAttribute('data-pt');
+    });
+    keyInput.placeholder = t('key_placeholder');
+    Array.prototype.slice.call(document.querySelectorAll('.lang button')).forEach(function (btn) {
+      var active = btn.getAttribute('data-lang') === lang;
+      btn.className = active ? 'active' : '';
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+    render();
+  }
+
+  function setStatus(keyName, cls) {
+    status = { key: keyName || '', cls: cls || '' };
+    render();
+  }
+
+  var timer = null;
+  function validate() {
+    var k = key();
+    try { localStorage.setItem('wwrs-tmdb-key', k); } catch (e) {}
+    if (!k) return setStatus('', '');
+    if (!KEY_RE.test(k)) return setStatus('st_invalid', 'bad');
+    setStatus('st_checking', '');
+    fetch(ORIGIN + '/validar-chave?k=' + encodeURIComponent(k))
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (key() !== k) return;
+        if (res.ok) setStatus('st_valid', 'ok');
+        else setStatus('st_refused', 'bad');
+      })
+      .catch(function () { setStatus('st_unreachable', ''); });
+  }
+
+  Array.prototype.slice.call(document.querySelectorAll('.lang button')).forEach(function (btn) {
+    btn.addEventListener('click', function () { applyLang(btn.getAttribute('data-lang')); });
+  });
+  keyInput.addEventListener('input', function () {
+    clearTimeout(timer);
+    timer = setTimeout(validate, 500);
+    render();
+  });
+  document.getElementById('check').addEventListener('click', validate);
+  toggleBtn.addEventListener('click', function () {
+    keyInput.type = keyInput.type === 'password' ? 'text' : 'password';
+    render();
+  });
+
+  boxes.forEach(function (b) { b.addEventListener('change', render); });
+  Array.prototype.slice.call(document.querySelectorAll('input[name=layout]')).forEach(function (r) {
+    r.addEventListener('change', render);
+  });
+  document.getElementById('all').addEventListener('click', function () {
+    boxes.forEach(function (b) { b.checked = true; }); render();
+  });
+  document.getElementById('none').addEventListener('click', function () {
+    boxes.forEach(function (b) { b.checked = false; }); render();
+  });
+  document.getElementById('reset').addEventListener('click', function () {
+    boxes.forEach(function (b) { b.checked = defaults.indexOf(b.value) !== -1; }); render();
+  });
+  copyBtn.addEventListener('click', function () {
+    if (!KEY_RE.test(key())) return setStatus('st_needkey', 'bad');
+    var url = manifestUrl();
+    var done = function () {
+      copiedUntil = Date.now() + 1600;
+      render();
+      setTimeout(render, 1700);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(done, done);
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = url; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta); done();
+    }
+  });
+
+  applyLang(lang);
+  if (key()) validate();
+</script>
+</body>
+</html>
