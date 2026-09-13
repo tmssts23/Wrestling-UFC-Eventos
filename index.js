@@ -33,6 +33,13 @@ let remainingPortRetries = MAX_PORT_RETRIES;
 const ADDON_ID = 'pt.wrestling-ufc-eventos';
 const ADDON_NAME = 'Wrestling & UFC — Eventos (WWE, AEW, TNA, UFC)';
 const VERSION = '1.2.0';
+
+// Verificacao do addon no stremio-addons.net.
+const STREMIO_ADDONS_CONFIG = {
+  issuer: 'https://stremio-addons.net',
+  signature:
+    'eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..U6kJKRNNPxDYyvhyKmXD7g.0ABzu9KF7JbTfHDbHJvHo7kk0fZipmSpdFoJOOpcamfroA6-E-D_rLdT0h4LshHO3ePtULCZ-4Z--J1YtsQcean7dOVnMSxBh1PZqSZlZEKsNpUdWIVwZH4a6BHNRLKB.LABqv5Ru7mOKj5TL5Lu_UA',
+};
 const PAGE_SIZE = 100;
 const UFC_PAGE_SIZE = 60;
 const USER_WINDOW_MS = 24 * 60 * 60 * 1000;
@@ -295,6 +302,7 @@ function getManifest(originBase, config) {
     name: ADDON_NAME,
     description:
       'Catálogos de eventos de wrestling e MMA a partir do TMDB: WWE, AEW e TNA com programas por temporada, eventos agrupados por ano e cada PPV individual, um catálogo com o que saiu na última semana, e todos os eventos UFC do mais recente para o mais antigo — com pósteres, descrições e datas.',
+    stremioAddonsConfig: STREMIO_ADDONS_CONFIG,
     resources: ['catalog', 'meta', 'stream'],
     // "Fight" cria o separador no Explorar; movie/series mantem-se para o ecra
     // principal, as fichas e os streams.
