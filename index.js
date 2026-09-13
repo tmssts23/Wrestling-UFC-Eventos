@@ -290,14 +290,14 @@ function getManifest(originBase, config) {
     idPrefixes: [metaBuilder.ID_PREFIX, 'tt'],
     ...(logo ? { logo, icon: logo } : {}),
     catalogs: catalogs.entries(config).map((entry) => {
-      const extra = catalogExtras(entry.def, entry.fight);
+      // So a notacao actual ("extra" com isRequired). A antiga (extraSupported /
+      // extraRequired) duplicava a informacao e o validador de manifests acusava-a
+      // como campos fora da especificacao.
       return {
         type: entry.type,
         id: entry.id,
         name: entry.name,
-        extra,
-        extraSupported: extra.map((e) => e.name),
-        ...(entry.fight ? { extraRequired: ['genre'] } : {}),
+        extra: catalogExtras(entry.def, entry.fight),
       };
     }),
     // Sem chave TMDB (nem da instalacao nem do servidor) o Stremio pede para configurar.
