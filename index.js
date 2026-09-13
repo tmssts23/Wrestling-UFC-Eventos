@@ -151,9 +151,22 @@ function sendText(res, method, status, text, contentType = 'text/plain; charset=
   res.end(body);
 }
 
+// Caminhos escritos por extenso: o empacotador da Vercel (@vercel/nft) so inclui
+// no deploy os ficheiros cujo caminho consegue ler no codigo. Assim o vercel.json
+// nao precisa de "includeFiles" e fica igual ao do addon de animacao.
+const PUBLIC_FILES = {
+  'configure.html': [
+    path.join(__dirname, 'public', 'configure.html'),
+    path.join(__dirname, 'dist', 'public', 'configure.html'),
+  ],
+  'addon-logo.svg': [
+    path.join(__dirname, 'public', 'addon-logo.svg'),
+    path.join(__dirname, 'dist', 'public', 'addon-logo.svg'),
+  ],
+};
+
 function publicFile(name) {
-  const candidates = [path.join(__dirname, 'public', name), path.join(__dirname, 'dist', 'public', name)];
-  for (const file of candidates) if (fs.existsSync(file)) return file;
+  for (const file of PUBLIC_FILES[name] || []) if (fs.existsSync(file)) return file;
   return null;
 }
 
